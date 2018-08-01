@@ -50,7 +50,7 @@ def svd(matrix):
     s = None
     v = None
     # YOUR CODE HERE
-    pass
+    u, s, v = np.linalg.svd(matrix)
     # END YOUR CODE
 
     return u, s, v
@@ -68,7 +68,7 @@ def get_singular_values(matrix, n):
     singular_values = None
     u, s, v = svd(matrix)
     # YOUR CODE HERE
-    pass
+    singular_values = s[:n]
     # END YOUR CODE
     return singular_values
 
@@ -76,7 +76,7 @@ def get_singular_values(matrix, n):
 def eigen_decomp(matrix):
     """ Implement Eigen Value Decomposition
     Args:
-        matrix: numpy matrix of shape (m, )
+        matrix: numpy matrix of shape (m, m)
 
     Returns:
         w: numpy array of shape (m, m) such that the column v[:,i] is the eigenvector corresponding to the eigenvalue w[i].
@@ -84,7 +84,7 @@ def eigen_decomp(matrix):
     w = None
     v = None
     # YOUR CODE HERE
-    pass
+    w, v = np.linalg.eig(matrix)
     # END YOUR CODE
     return w, v
 

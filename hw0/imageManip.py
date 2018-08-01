@@ -19,7 +19,7 @@ def load(image_path):
 
     # YOUR CODE HERE
     # Use skimage io.imread
-    pass
+    out = io.imread(image_path)
     # END YOUR CODE
 
     return out
