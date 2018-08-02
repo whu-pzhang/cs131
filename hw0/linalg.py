@@ -103,6 +103,7 @@ def get_eigen_values_and_vectors(matrix, num_values):
     eigen_values = []
     eigen_vectors = []
     # YOUR CODE HERE
-    pass
+    eigen_values = w[:num_values]
+    eigen_vectors = v[:, :num_values]
     # END YOUR CODE
     return eigen_values, eigen_vectors

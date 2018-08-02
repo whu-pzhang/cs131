@@ -39,7 +39,7 @@ def change_value(image):
     out = None
 
     # YOUR CODE HERE
-    pass
+    out = 0.5 * np.square(image)
     # END YOUR CODE
 
     return out
@@ -57,7 +57,7 @@ def convert_to_grey_scale(image):
     out = None
 
     # YOUR CODE HERE
-    pass
+    out = 0.3 * image[:, :, 0] + 0.59 * image[:, :, 1] + 0.11 * image[:, :, 2]
     # END YOUR CODE
 
     return out
@@ -77,7 +77,9 @@ def rgb_decomposition(image, channel):
     out = None
 
     # YOUR CODE HERE
-    pass
+    color = {'R': 0, 'G': 1, 'B': 2}
+    out = np.array(image)
+    out[:, :, color[channel]] = 0
     # END YOUR CODE
 
     return out
@@ -98,7 +100,10 @@ def lab_decomposition(image, channel):
     out = None
 
     # YOUR CODE HERE
-    pass
+    color_dict = {'l': 0, 'a': 1, 'b': 2}
+    out = (lab + np.abs(np.min(lab)))
+    out = out / np.max(lab)
+    out[:, :, color_dict[channel.lower()]] = 0
     # END YOUR CODE
 
     return out
@@ -119,7 +124,9 @@ def hsv_decomposition(image, channel='H'):
     out = None
 
     # YOUR CODE HERE
-    pass
+    color_dict = {'h': 0, 's': 1, 'v': 2}
+    hsv[:, :, color_dict[channel.lower()]] = 0
+    out = hsv
     # END YOUR CODE
 
     return out
@@ -141,7 +148,12 @@ def mix_images(image1, image2, channel1, channel2):
 
     out = None
     # YOUR CODE HERE
-    pass
+    out = np.zeros_like(image1)
+    _, image_width, _ = image1.shape
+    image1 = rgb_decomposition(image1, channel1)
+    image2 = rgb_decomposition(image2, channel2)
+    out[:, :image_width // 2] = image1[:, :image_width // 2]
+    out[:, image_width // 2:] = image2[:, image_width // 2:]
     # END YOUR CODE
 
     return out
