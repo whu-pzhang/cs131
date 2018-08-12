@@ -158,8 +158,21 @@ def non_maximum_suppression(G, theta):
     # Round the gradient direction to the nearest 45 degrees
     theta = np.floor((theta + 22.5) / 45) * 45
 
+    # G = np.pad(G, ((1, 1), (1, 1)), mode="edge")
     # BEGIN YOUR CODE
-    pass
+    for i in range(1, H - 1):
+        for j in range(1, W - 1):
+            if theta[i, j] == 0 or theta[i, j] == 180:
+                neighbors = [G[i, j - 1], G[i, j + 1]]
+            if theta[i, j] == 45 or theta[i, j] == 225:
+                neighbors = [G[i - 1, j - 1], G[i + 1, j + 1]]
+            if theta[i, j] == 90 or theta[i, j] == 270:
+                neighbors = [G[i - 1, j], G[i + 1, j]]
+            if theta[i, j] == 135 or theta[i, j] == 315:
+                neighbors = [G[i - 1, j + 1], G[i + 1, j - 1]]
+
+            if G[i, j] >= np.max(neighbors):
+                out[i, j] = G[i, j]
     # END YOUR CODE
 
     return out
