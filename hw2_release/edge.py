@@ -160,7 +160,7 @@ def non_maximum_suppression(G, theta):
 
     # G = np.pad(G, ((1, 1), (1, 1)), mode="edge")
     # BEGIN YOUR CODE
-    for i in range(1, H - 1):
+    for i in range(H - 1):
         for j in range(1, W - 1):
             if theta[i, j] == 0 or theta[i, j] == 180:
                 neighbors = [G[i, j - 1], G[i, j + 1]]
@@ -171,8 +171,21 @@ def non_maximum_suppression(G, theta):
             if theta[i, j] == 135 or theta[i, j] == 315:
                 neighbors = [G[i - 1, j + 1], G[i + 1, j - 1]]
 
-            if G[i, j] >= np.max(neighbors):
+            if G[i, j] >= neighbors[0] and G[i, j] >= neighbors[1]:
                 out[i, j] = G[i, j]
+            else:
+                out[i, j] = 0
+            # alpha = np.deg2rad(theta[i, j])
+            # # note here the angle is measured clockwisely
+            # # i.e. if theta=90 degree the direction is south.
+            # p1 = G[i - int(np.round(np.sin(alpha))), j -
+            #        int(np.round(np.cos(alpha)))]
+            # p2 = G[i + int(np.round(np.sin(alpha))), j +
+            #        int(np.round(np.cos(alpha)))]
+            # if not (G[i, j] >= p1 and G[i, j] >= p2):
+            #     out[i, j] = 0
+            # else:
+            #     out[i, j] = G[i, j]
     # END YOUR CODE
 
     return out
@@ -198,7 +211,8 @@ def double_thresholding(img, high, low):
     weak_edges = np.zeros(img.shape)
 
     # YOUR CODE HERE
-    pass
+    strong_edges = img >= high
+    weak_edges = (img < high) & (img >= low)
     # END YOUR CODE
 
     return strong_edges, weak_edges
@@ -252,7 +266,13 @@ def link_edges(strong_edges, weak_edges):
     edges = np.zeros((H, W))
 
     # YOUR CODE HERE
-    pass
+    for i, j in indices:
+        edges[i, j] = True
+        neighbors = get_neighbors(i, j, H, W)
+        for coordiate in neighbors:
+            if weak_edges[coordiate]:
+                edges[coordiate] = True
+
     # END YOUR CODE
 
     return edges
@@ -271,7 +291,17 @@ def canny(img, kernel_size=5, sigma=1.4, high=20, low=15):
         edge: numpy array of shape(H, W)
     """
     # YOUR CODE HERE
-    pass
+    # 1. smoothing
+    blurred_img = conv(img, gaussian_kernel(kernel_size, sigma))
+    # 2. Finding gradients
+    G, theta = gradient(blurred_img)
+    # 3. Non-maximum suppression
+    nms = non_maximum_suppression(G, theta)
+    # 4. Double thresholding
+    strong_edges, weak_edges = double_thresholding(nms, high, low)
+    # 5. Edge tracking
+    edge = link_edges(strong_edges, weak_edges)
+
     # END YOUR CODE
 
     return edge
