@@ -160,30 +160,30 @@ def non_maximum_suppression(G, theta):
     # BEGIN YOUR CODE
     for i in range(H - 1):
         for j in range(1, W - 1):
-            # if theta[i, j] == 0 or theta[i, j] == 180:
-            #     neighbors = [G[i, j - 1], G[i, j + 1]]
-            # if theta[i, j] == 45 or theta[i, j] == 225:
-            #     neighbors = [G[i - 1, j - 1], G[i + 1, j + 1]]
-            # if theta[i, j] == 90 or theta[i, j] == 270:
-            #     neighbors = [G[i - 1, j], G[i + 1, j]]
-            # if theta[i, j] == 135 or theta[i, j] == 315:
-            #     neighbors = [G[i - 1, j + 1], G[i + 1, j - 1]]
-            #
-            # if G[i, j] >= neighbors[0] and G[i, j] >= neighbors[1]:
-            #     out[i, j] = G[i, j]
-            # else:
-            #     out[i, j] = 0
-            alpha = np.deg2rad(theta[i, j])
-            # note here the angle is measured clockwisely
-            # i.e. if theta=90 degree the direction is south.
-            p1 = G[i - int(np.round(np.sin(alpha))), j -
-                   int(np.round(np.cos(alpha)))]
-            p2 = G[i + int(np.round(np.sin(alpha))), j +
-                   int(np.round(np.cos(alpha)))]
-            if not (G[i, j] >= p1 and G[i, j] >= p2):
-                out[i, j] = 0
-            else:
+            if theta[i, j] == 0 or theta[i, j] == 180:
+                neighbors = [G[i, j - 1], G[i, j + 1]]
+            if theta[i, j] == 45 or theta[i, j] == 225:
+                neighbors = [G[i - 1, j - 1], G[i + 1, j + 1]]
+            if theta[i, j] == 90 or theta[i, j] == 270:
+                neighbors = [G[i - 1, j], G[i + 1, j]]
+            if theta[i, j] == 135 or theta[i, j] == 315:
+                neighbors = [G[i - 1, j + 1], G[i + 1, j - 1]]
+
+            if G[i, j] >= neighbors[0] and G[i, j] >= neighbors[1]:
                 out[i, j] = G[i, j]
+            else:
+                out[i, j] = 0
+            # alpha = np.deg2rad(theta[i, j])
+            # # note here the angle is measured clockwisely
+            # # i.e. if theta=90 degree the direction is south.
+            # p1 = G[i - int(np.round(np.sin(alpha))), j -
+            #        int(np.round(np.cos(alpha)))]
+            # p2 = G[i + int(np.round(np.sin(alpha))), j +
+            #        int(np.round(np.cos(alpha)))]
+            # if not (G[i, j] >= p1 and G[i, j] >= p2):
+            #     out[i, j] = 0
+            # else:
+            #     out[i, j] = G[i, j]
             # END YOUR CODE
 
     return out
