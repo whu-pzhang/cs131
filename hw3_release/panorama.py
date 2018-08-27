@@ -69,7 +69,10 @@ def simple_descriptor(patch):
     """
     feature = []
     # YOUR CODE HERE
-    pass
+    std = np.std(patch)
+    mean = np.mean(patch)
+    std = std if std > 0.0 else 1.0
+    feature = (patch - mean) / std
     # END YOUR CODE
     return feature
 
@@ -116,10 +119,17 @@ def match_descriptors(desc1, desc2, threshold=0.5):
     matches = []
 
     N = desc1.shape[0]
-    dists = cdist(desc1, desc2)
+    a = desc1.reshape(desc1.shape[0], -1)
+    b = desc2.reshape(desc2.shape[0], -1)
+    dists = cdist(a, b)
+    # dists = np.sqrt((desc1 - desc2)**2)
 
     # YOUR CODE HERE
-    pass
+    for i in range(N):
+        dist = dists[i, :]
+        if np.min(dist) / (np.partition(dist, 2)[1]) <= threshold:
+            matches.append([i, np.argmin(dist)])
+    matches = np.array(matches).reshape(-1, 2)
     # END YOUR CODE
 
     return matches
