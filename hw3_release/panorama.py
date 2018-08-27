@@ -37,10 +37,12 @@ def harris_corners(img, window_size=3, k=0.04):
     dx2 = convolve(dx**2, window)
     dy2 = convolve(dy**2, window)
     dxdy = convolve(dx * dy, window)
-    for i in range(H):
-        for j in range(W):
-            M = np.array([[dx2[i, j], dxdy[i, j]], [dxdy[i, j], dy2[i, j]]])
-            response[i, j] = np.linalg.det(M) - k * np.trace(M)**2
+    # for i in range(H):
+    #     for j in range(W):
+    #         M = np.array([[dx2[i, j], dxdy[i, j]], [dxdy[i, j], dy2[i, j]]])
+    # response[i, j] = np.linalg.det(M) - k * np.trace(M)**2
+
+    response = dx2 * dy2 - dxdy**2 - k * (dx2 + dy2)**2
 
     # END YOUR CODE
 
