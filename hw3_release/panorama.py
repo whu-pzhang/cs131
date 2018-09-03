@@ -257,7 +257,20 @@ def hog_descriptor(patch, pixels_per_cell=(8, 8)):
 
     # Compute histogram per cell
     # YOUR CODE HERE
-    pass
+    for i in range(rows):
+        for j in range(cols):
+            idxs = theta_cells[i, j] // degrees_per_bin
+            idxs[idxs == 9] = 8
+            idxs = idxs.astype(int)
+            for m in range(G_cells.shape[2]):
+                for n in range(G_cells.shape[3]):
+                    cells[i, j, idxs[m, n]] += G_cells[i, j, m, n]
+            # idxs = idxs.astype(int)
+            # cells[i, j, idxs] += G_cells[i, j, idxs]
+
+    # Nomalize across block
+    cells = (cells - np.mean(cells)) / np.std(cells)
+    block = np.ravel(cells)
     # YOUR CODE HERE
 
     return block
