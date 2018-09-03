@@ -73,6 +73,7 @@ def simple_descriptor(patch):
     mean = np.mean(patch)
     std = std if std > 0.0 else 1.0
     feature = (patch - mean) / std
+    feature = np.ravel(feature)
     # END YOUR CODE
     return feature
 
@@ -119,9 +120,9 @@ def match_descriptors(desc1, desc2, threshold=0.5):
     matches = []
 
     N = desc1.shape[0]
-    a = desc1.reshape(desc1.shape[0], -1)
-    b = desc2.reshape(desc2.shape[0], -1)
-    dists = cdist(a, b)
+    # a = desc1.reshape(desc1.shape[0], -1)
+    # b = desc2.reshape(desc2.shape[0], -1)
+    dists = cdist(desc1, desc2)
     # dists = np.sqrt((desc1 - desc2)**2)
 
     # YOUR CODE HERE
@@ -155,7 +156,7 @@ def fit_affine_matrix(p1, p2):
     p2 = pad(p2)
 
     # YOUR CODE HERE
-    pass
+    H = np.linalg.lstsq(p2, p1, rcond=None)[0]
     # END YOUR CODE
 
     # Sometimes numerical issues cause least-squares to produce the last
@@ -197,7 +198,21 @@ def ransac(keypoints1, keypoints2, matches, n_iters=200, threshold=20):
 
     # RANSAC iteration start
     # YOUR CODE HERE
-    pass
+    for i in range(n_iters):
+        index = np.random.choice(N, n_samples, replace=False)
+        p1 = matched1[index, :]
+        p2 = matched2[index, :]
+        H = np.linalg.lstsq(p2, p1, rcond=None)[0]
+        H[:, 2] = np.array([0, 0, 1])
+        temp_max = np.linalg.norm(
+            matched2 @ H - matched1, axis=1) ** 2 < threshold
+        temp_n = np.sum(temp_max)
+        if temp_n > n_inliers:
+            max_inliers = temp_max.copy()
+            n_inliers = temp_n
+    H = np.linalg.lstsq(matched2[max_inliers],
+                        matched1[max_inliers], rcond=None)[0]
+    H[:, 2] = np.array([0, 0, 1])
     # END YOUR CODE
     return H, matches[max_inliers]
 
