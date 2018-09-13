@@ -65,21 +65,12 @@ def compute_cost(image, energy, axis=1):
 
     # YOUR CODE HERE
     for i in range(1, H):
-        for j in range(W):
-            if j == 0:
-                idx = np.argmin(energy[i - 1, j:j + 2])
-                min_energy = cost[i - 1, j + idx]
-                paths[i, j] = idx
-            elif j == W - 1:
-                idx = np.argmin(energy[i - 1, j - 1:])
-                min_energy = cost[i - 1, j + idx - 1]
-                paths[i, j] = idx - 1
-            else:
-                idx = np.argmin(energy[i - 1, j - 1:j + 2])
-                min_energy = cost[i - 1, j + idx - 1]
-                paths[i, j] = idx - 1
-
-            cost[i, j] = energy[i, j] + min_energy
+        M1 = np.insert(cost[i - 1, 0:-1], 0, 1e10, axis=0)
+        M2 = cost[i - 1]
+        M3 = np.insert(cost[i - 1, 1:], W - 1, 1e10, axis=0)
+        M = np.vstack((M1, M2, M3))
+        cost[i] = energy[i] + np.min(M, axis=0)
+        paths[i] = np.argmin(M, axis=0) - 1
 
     # END YOUR CODE
 
