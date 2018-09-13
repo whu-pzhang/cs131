@@ -68,16 +68,16 @@ def compute_cost(image, energy, axis=1):
         for j in range(W):
             if j == 0:
                 idx = np.argmin(energy[i - 1, j:j + 2])
+                min_energy = cost[i - 1, j + idx]
                 paths[i, j] = idx
-                min_energy = energy[i - 1, idx + j]
             elif j == W - 1:
-                idx = np.argmin(energy[i - 1, j - 1:j + 1])
+                idx = np.argmin(energy[i - 1, j - 1:])
+                min_energy = cost[i - 1, j + idx - 1]
                 paths[i, j] = idx - 1
-                min_energy = energy[i - 1, idx - 1 + j]
             else:
                 idx = np.argmin(energy[i - 1, j - 1:j + 2])
+                min_energy = cost[i - 1, j + idx - 1]
                 paths[i, j] = idx - 1
-                min_energy = energy[i - 1, idx + j]
 
             cost[i, j] = energy[i, j] + min_energy
 
