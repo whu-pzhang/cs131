@@ -108,7 +108,8 @@ def backtrack_seam(paths, end):
     seam[H - 1] = end
 
     # YOUR CODE HERE
-    pass
+    for i in range(H - 2, -1, -1):
+        seam[i] = seam[i + 1] + paths[i + 1, seam[i + 1]]
     # END YOUR CODE
 
     # Check that seam only contains values in [0, W-1]
@@ -138,7 +139,7 @@ def remove_seam(image, seam):
     out = None
     H, W, C = image.shape
     # YOUR CODE HERE
-    pass
+    out = image[np.arange(W) != seam[:, None]].reshape(H, W - 1, C)
     # END YOUR CODE
     out = np.squeeze(out)  # remove last dimension if C == 1
 
@@ -179,7 +180,12 @@ def reduce(image, size, axis=1, efunc=energy_function, cfunc=compute_cost):
     assert size > 0, "Size must be greater than zero"
 
     # YOUR CODE HERE
-    pass
+    for _ in range(W - size):
+        energy = efunc(out)
+        cost, paths = cfunc(out, energy)
+        end = np.argmin(cost[-1])
+        seam = backtrack_seam(paths, end)
+        out = remove_seam(out, seam)
     # END YOUR CODE
 
     assert out.shape[1] == size, "Output doesn't have the right shape"
