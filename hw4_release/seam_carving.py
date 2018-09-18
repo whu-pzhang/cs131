@@ -139,7 +139,7 @@ def remove_seam(image, seam):
     out = None
     H, W, C = image.shape
     # YOUR CODE HERE
-    out = image[np.arange(W) != seam[:, None]].reshape(H, W - 1, C)
+    out = image[np.arange(W) != seam[:, np.newaxis]].reshape(H, W - 1, C)
     # END YOUR CODE
     out = np.squeeze(out)  # remove last dimension if C == 1
 
@@ -374,7 +374,11 @@ def enlarge(image, size, axis=1, efunc=energy_function, cfunc=compute_cost):
     assert size <= 2 * W, "size must be smaller than %d" % (2 * W)
 
     # YOUR CODE HERE
-    pass
+    seams = find_seams(out, size - W)
+    seams = np.expand_dims(seams, axis=2)
+    for i in range(size - W):
+        out = duplicate_seam(out, np.where(seams == i + 1)[1])
+        seams = duplicate_seam(seams, np.where(seams == i + 1)[1])
     # END YOUR CODE
 
     if axis == 0:
